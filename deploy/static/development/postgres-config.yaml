@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: postgres-secret
+type: Opaque
+data:
+  DB_USERNAME: cG9zdGdyZXM=
+  DB_PASSWORD: dmZrdGQwMTAz
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: postgres-config
+data:
+  DB_URL: "jdbc:postgresql://postgres-service:30432/"
