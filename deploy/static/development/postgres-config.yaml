@@ -12,4 +12,4 @@ kind: ConfigMap
 metadata:
   name: postgres-config
 data:
-  DB_URL: "jdbc:postgresql://postgres-service:30432/"
+  DB_URL: "jdbc:postgresql://postgres-service:5432/"

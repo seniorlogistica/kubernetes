@@ -1,0 +1,68 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: logistica-customization-service
+  labels:
+    app: logistica-customization-service
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: logistica-customization-service
+        tier: backend
+    spec:
+      containers:
+      - name: logistica-customization-service
+        image: seniorlogistica/customization-service:develop-SNAPSHOT
+        ports:
+        - containerPort: 8886
+        env:
+          - name: DB_URL
+            valueFrom:
+              configMapKeyRef:
+                name: postgres-config
+                key: DB_URL
+          - name: DB_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: DB_USERNAME
+          - name: DB_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: postgres-secret
+                key: DB_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: logistica-customization-service
+spec:
+  selector:
+    app: logistica-customization-service
+    tier: backend
+  ports:
+    - port: 8088
+      targetPort: 8886
+  type: ClusterIP
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: custom-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "600"
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /custom(/|$)(.*)
+        backend:
+          serviceName: logistica-customization-service
+          servicePort: 8088
