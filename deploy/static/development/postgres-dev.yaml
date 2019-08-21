@@ -1,0 +1,41 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        service: postgres
+        name: postgres
+    spec:
+      containers:
+      - args:
+        image: postgres:latest
+        name: postgres
+        env:
+          - name: POSTGRES_USER
+            value: "postgres"
+          - name: POSTGRES_PASSWORD
+            value: "vfktd0103"
+        volumeMounts:
+            - mountPath: "/var/lib/postgresql/data"
+              name: "pgdata"
+      volumes:
+        - hostPath:
+            path: "/mnt/data/postgres"
+          name: pgdata
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres-service
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      nodePort: 30432
+  selector:
+    service: postgres
+  type: NodePort
