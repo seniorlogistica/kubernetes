@@ -30,7 +30,7 @@ spec:
               name: "pgdata"
       volumes:
         - hostPath:
-            path: "/mnt/data/postgres"
+            path: "/data/postgres"
           name: pgdata
 ---
 apiVersion: v1

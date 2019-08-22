@@ -15,15 +15,16 @@ spec:
       containers:
       - name: main-frontend
         image: seniorlogistica/gwt-main-frontend:1.0.0-SNAPSHOT
+        imagePullPolicy: Always
         ports:
         - containerPort: 8080
         volumeMounts:
         - name: tomcat-wms-storage
-          mountPath: /usr/local/tomcat/webapps
+          mountPath: "/usr/local/tomcat/webapps"
       volumes:
-        - name: tomcat-wms-storage
-          hostPath:
-            path: "/mnt/data/tomcat"
+        - hostPath:
+            path: "/data/tomcat/"
+          name: tomcat-wms-storage
 ---
 apiVersion: v1
 kind: Service
